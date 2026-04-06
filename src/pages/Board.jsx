@@ -17,6 +17,8 @@ import { styled } from "@mui/material/styles";
 
 import tecboardLogo from "../assets/tecboard.svg";
 import bannerImage from "../assets/banner.png";
+import { useState } from "react";
+import { eventSchema } from "../schema";
 
 const eventCategories = [
   {
@@ -125,23 +127,43 @@ const Chip = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.textSecondary,
   padding: "8px",
   borderRadius: "4px",
-  marginBottom: "8px",
+  mb: 1,
 }));
 
 export function Board() {
+  const [formData, setFormData] = useState({
+    name: "",
+    date: "",
+    theme: "",
+  });
+
+  const [error, setError] = useState("");
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const result = eventSchema.safeParse(formData);
+
+    if (result.success) {
+      console.log(result.data);
+      setError("");
+    } else {
+      const firstError = result.error.issues[0];
+      setError(firstError.message);
+    }
+  }
+
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#06151A" }}>
       {/* Header */}
-      <AppBar
-        position="static"
-        sx={{ py: 2, backgroundColor: "#06151A", boxShadow: "none" }}
-      >
+      <AppBar position="static" sx={{ py: 2, backgroundColor: "#06151A" }}>
         <Toolbar sx={{ justifyContent: "center" }}>
-          <img
-            src={tecboardLogo}
-            alt="Tecboard Logo"
-            style={{ height: "28px" }}
-          />
+          <img src={tecboardLogo} alt="Logo" style={{ height: "28px" }} />
         </Toolbar>
       </AppBar>
 
@@ -159,15 +181,16 @@ export function Board() {
         }}
       >
         <Box sx={{ position: "relative" }}>
-          <img src={bannerImage} alt="Banner Decorativo" />
+          <img src={bannerImage} />
           <Typography
             variant="h1"
+            component="h1"
             sx={{
               position: "absolute",
               bottom: "80px",
               left: "50%",
               transform: "translateX(-50%)",
-              width: { xs: "90%", md: "652px" },
+              width: "652px",
               textAlign: "center",
             }}
           >
@@ -176,7 +199,6 @@ export function Board() {
         </Box>
       </Box>
 
-      {/* Formulário */}
       <Box
         sx={{
           display: "flex",
@@ -185,11 +207,12 @@ export function Board() {
           flexDirection: "column",
           backgroundColor: "#06151A",
           py: 8,
-          px: 2,
         }}
       >
+        {/* Formulário */}
         <Box
           component="form"
+          onSubmit={handleSubmit}
           noValidate
           sx={{
             backgroundColor: "#212121",
@@ -201,63 +224,87 @@ export function Board() {
           }}
         >
           <Typography sx={{ mb: 2 }}>Preencha para criar um evento:</Typography>
+          {error && (
+            <Typography color="error" sx={{ mb: 2, fontSize: "14px" }}>
+              Erro: {error}
+            </Typography>
+          )}
+
           <Stack spacing={3}>
-            {/* Campo Nome */}
+            {/* Campo: Nome */}
             <FormControl fullWidth>
               <InputLabel
                 shrink
-                htmlFor="event-name"
-                sx={{ position: "static", transform: "none", mb: 1 }}
+                htmlFor="event-name-input"
+                sx={{
+                  position: "static",
+                  transform: "none",
+                  mb: 1,
+                  color: "#fff",
+                }}
               >
                 Qual o nome do evento?
               </InputLabel>
               <OutlinedInput
-                id="event-name"
-                name="eventName"
+                id="event-name-input"
+                name="name"
                 placeholder="Summer dev hits"
-                autoComplete="organization"
                 fullWidth
                 sx={{ height: "36px" }}
+                onChange={handleChange}
+                value={formData.name}
               />
             </FormControl>
 
-            {/* Campo Data */}
+            {/* Campo: Data */}
             <FormControl fullWidth>
               <InputLabel
                 shrink
-                htmlFor="event-date"
-                sx={{ position: "static", transform: "none", mb: 1 }}
+                htmlFor="event-date-input"
+                sx={{
+                  position: "static",
+                  transform: "none",
+                  mb: 1,
+                  color: "#fff",
+                }}
               >
                 Data do evento
               </InputLabel>
               <OutlinedInput
-                id="event-date"
-                name="eventDate"
+                id="event-date-input"
+                name="date"
+                type="text"
                 placeholder="XX/XX/XXXX"
-                autoComplete="off"
                 fullWidth
                 sx={{ height: "36px" }}
+                onChange={handleChange}
+                value={formData.date}
               />
             </FormControl>
 
-            {/* Campo Tema (Select) */}
+            {/* Campo: Tema */}
             <FormControl fullWidth>
               <InputLabel
                 shrink
-                id="theme-label"
-                htmlFor="event-theme"
-                sx={{ position: "static", transform: "none", mb: 1 }}
+                id="event-theme-label"
+                sx={{
+                  position: "static",
+                  transform: "none",
+                  mb: 1,
+                  color: "#fff",
+                }}
               >
                 Tema do evento
               </InputLabel>
               <Select
-                labelId="theme-label"
-                id="event-theme"
-                name="eventTheme"
-                defaultValue=""
+                labelId="event-theme-label"
+                id="event-theme-select"
+                name="theme"
+                value={formData.theme}
+                onChange={handleChange}
                 displayEmpty
                 fullWidth
-                sx={{ height: "36px" }}
+                sx={{ height: "36px", color: "#fff" }}
               >
                 <MenuItem value="" disabled>
                   Selecione uma opção
@@ -291,19 +338,21 @@ export function Board() {
         >
           {eventCategories.map((category) => (
             <Box key={category.name}>
-              <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold" }}>
-                {category.name}
-              </Typography>
+              <Typography>{category.name}</Typography>
 
-              <Grid container spacing={3}>
+              <Grid
+                container
+                spacing={3}
+                sx={{ maxWidth: "1200px", mx: "auto" }}
+              >
                 {category.events.map((event) => (
                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
-                    <Card sx={{ maxWidth: "282px", mx: { xs: "auto", md: 0 } }}>
+                    <Card sx={{ width: "282px" }}>
                       <CardMedia
                         component="img"
                         height="236px"
                         image={event.image}
-                        alt={`Capa do evento ${event.name}`}
+                        alt={event.name}
                       />
                       <CardContent
                         sx={{
@@ -314,18 +363,12 @@ export function Board() {
                         }}
                       >
                         <Chip>
-                          <Typography variant="caption" sx={{ color: "#fff" }}>
+                          <Typography variant="caption">
                             {event.theme}
                           </Typography>
                         </Chip>
-                        <Typography
-                          sx={{ mt: 1, fontSize: "0.9rem", color: "#17D9B1" }}
-                        >
-                          {event.date}
-                        </Typography>
-                        <Typography variant="h6" sx={{ fontSize: "1.1rem" }}>
-                          {event.name}
-                        </Typography>
+                        <Typography>{event.date}</Typography>
+                        <Typography>{event.name}</Typography>
                       </CardContent>
                     </Card>
                   </Grid>

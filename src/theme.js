@@ -21,9 +21,6 @@ const theme = createTheme({
           padding: "8px 16px",
           borderRadius: "8px",
           textTransform: "none",
-          "&:hover": {
-            backgroundColor: "#14b392",
-          },
         },
       },
     },
@@ -38,7 +35,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           height: "36px",
-          color: "#fff",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "#33353F",
           },
@@ -50,10 +46,16 @@ const theme = createTheme({
           },
         },
         input: {
+          height: "36px",
           padding: "0 14px",
+          display: "flex",
+          alignItems: "center",
+          fontSize: "16px",
+          color: "#fff",
           "&::placeholder": {
             color: "#33353F",
             opacity: 1,
+            fontSize: "16px",
           },
         },
       },
@@ -61,18 +63,35 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          color: "#fff",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "#33353F",
           },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "#17D9B1",
+            borderWidth: "2px",
+          },
+          "&.MuiSelect-select.MuiSelect-outlined": {
+            color: "#fff",
+            fontSize: "16px",
           },
         },
         select: {
-          "&.MuiSelect-select": {
-            display: "flex",
-            alignItems: "center",
+          '&[aria-expanded="false"]': {
+            color: "#fff",
+            fontSize: "16px",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#fff",
+          "&.Mui-focused": {
+            color: "#fff",
           },
         },
       },
