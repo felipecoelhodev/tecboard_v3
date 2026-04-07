@@ -17,8 +17,9 @@ import { styled } from "@mui/material/styles";
 
 import tecboardLogo from "../assets/tecboard.svg";
 import bannerImage from "../assets/banner.png";
-import { useState } from "react";
 import { eventSchema } from "../schema";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const eventCategories = [
   {
@@ -131,35 +132,16 @@ const Chip = styled(Box)(({ theme }) => ({
 }));
 
 export function Board() {
-  const [formData, setFormData] = useState({
-    name: "",
-    date: "",
-    theme: "",
+  const { handleSubmit, control } = useForm({
+    resolver: zodResolver(eventSchema),
   });
 
-  const [error, setError] = useState("");
-
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const result = eventSchema.safeParse(formData);
-
-    if (result.success) {
-      console.log(result.data);
-      setError("");
-    } else {
-      const firstError = result.error.issues[0];
-      setError(firstError.message);
-    }
+  function handleOnSubmit(data) {
+    console.log(data);
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#06151A" }}>
+    <Box sx={{ height: "100vh", backgroundColor: "#06151A" }}>
       {/* Header */}
       <AppBar position="static" sx={{ py: 2, backgroundColor: "#06151A" }}>
         <Toolbar sx={{ justifyContent: "center" }}>
@@ -181,7 +163,7 @@ export function Board() {
         }}
       >
         <Box sx={{ position: "relative" }}>
-          <img src={bannerImage} />
+          <img src={bannerImage} alt="Banner" />
           <Typography
             variant="h1"
             component="h1"
@@ -212,8 +194,7 @@ export function Board() {
         {/* Formulário */}
         <Box
           component="form"
-          onSubmit={handleSubmit}
-          noValidate
+          onSubmit={handleSubmit(handleOnSubmit)}
           sx={{
             backgroundColor: "#212121",
             width: "100%",
@@ -223,103 +204,91 @@ export function Board() {
             borderRadius: 2,
           }}
         >
-          <Typography sx={{ mb: 2 }}>Preencha para criar um evento:</Typography>
-          {error && (
-            <Typography color="error" sx={{ mb: 2, fontSize: "14px" }}>
-              Erro: {error}
-            </Typography>
-          )}
-
-          <Stack spacing={3}>
-            {/* Campo: Nome */}
+          <Typography>Preencha para criar um evento:</Typography>
+          <Stack spacing={2} sx={{ mt: 2 }}>
             <FormControl fullWidth>
               <InputLabel
                 shrink
-                htmlFor="event-name-input"
-                sx={{
-                  position: "static",
-                  transform: "none",
-                  mb: 1,
-                  color: "#fff",
-                }}
+                htmlFor="name"
+                sx={{ position: "static", transform: "none", mb: 1 }}
               >
                 Qual o nome do evento?
               </InputLabel>
-              <OutlinedInput
-                id="event-name-input"
+              <Controller
                 name="name"
-                placeholder="Summer dev hits"
-                fullWidth
-                sx={{ height: "36px" }}
-                onChange={handleChange}
-                value={formData.name}
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <OutlinedInput
+                    id="name"
+                    placeholder="Summer dev hits"
+                    autoComplete="off"
+                    fullWidth
+                    sx={{ height: "36px" }}
+                    {...field}
+                  />
+                )}
               />
             </FormControl>
 
-            {/* Campo: Data */}
             <FormControl fullWidth>
               <InputLabel
                 shrink
-                htmlFor="event-date-input"
-                sx={{
-                  position: "static",
-                  transform: "none",
-                  mb: 1,
-                  color: "#fff",
-                }}
+                htmlFor="date"
+                sx={{ position: "static", transform: "none", mb: 1 }}
               >
                 Data do evento
               </InputLabel>
-              <OutlinedInput
-                id="event-date-input"
+              <Controller
                 name="date"
-                type="text"
-                placeholder="XX/XX/XXXX"
-                fullWidth
-                sx={{ height: "36px" }}
-                onChange={handleChange}
-                value={formData.date}
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <OutlinedInput
+                    id="date"
+                    type="date"
+                    autoComplete="off"
+                    fullWidth
+                    sx={{ height: "36px" }}
+                    {...field}
+                  />
+                )}
               />
             </FormControl>
 
-            {/* Campo: Tema */}
             <FormControl fullWidth>
               <InputLabel
                 shrink
-                id="event-theme-label"
-                sx={{
-                  position: "static",
-                  transform: "none",
-                  mb: 1,
-                  color: "#fff",
-                }}
+                id="theme-label"
+                sx={{ position: "static", transform: "none", mb: 1 }}
               >
                 Tema do evento
               </InputLabel>
-              <Select
-                labelId="event-theme-label"
-                id="event-theme-select"
+              <Controller
                 name="theme"
-                value={formData.theme}
-                onChange={handleChange}
-                displayEmpty
-                fullWidth
-                sx={{ height: "36px", color: "#fff" }}
-              >
-                <MenuItem value="" disabled>
-                  Selecione uma opção
-                </MenuItem>
-                <MenuItem value="Front-end">Front-end</MenuItem>
-                <MenuItem value="Design">Design</MenuItem>
-                <MenuItem value="Marketing">Marketing</MenuItem>
-              </Select>
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Select
+                    labelId="theme-label"
+                    id="theme"
+                    displayEmpty
+                    fullWidth
+                    sx={{ height: "36px" }}
+                    {...field}
+                  >
+                    <MenuItem value="" disabled>
+                      Selecione uma opção
+                    </MenuItem>
+                    <MenuItem value="Front-end">Front-end</MenuItem>
+                    <MenuItem value="Design">Design</MenuItem>
+                    <MenuItem value="Marketing">Marketing</MenuItem>
+                  </Select>
+                )}
+              />
             </FormControl>
 
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ alignSelf: "center", mt: 2 }}
-            >
+            <Button type="submit" sx={{ alignSelf: "center" }}>
               Criar evento
             </Button>
           </Stack>
@@ -338,7 +307,7 @@ export function Board() {
         >
           {eventCategories.map((category) => (
             <Box key={category.name}>
-              <Typography>{category.name}</Typography>
+              <Typography sx={{ mb: 2 }}>{category.name}</Typography>
 
               <Grid
                 container
