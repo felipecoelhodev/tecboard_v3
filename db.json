@@ -1,0 +1,32 @@
+{
+  "events": [
+    {
+      "id": "1",
+      "name": "Workshop React",
+      "theme": "Front-end",
+      "date": "2025-05-20",
+      "image": "https://placehold.co/236x282"
+    },
+    {
+      "id": "2",
+      "name": "Conference JS",
+      "theme": "Front-end",
+      "date": "2025-06-15",
+      "image": "https://placehold.co/236x282"
+    },
+    {
+      "id": "3",
+      "name": "Vue.js Masterclass",
+      "theme": "Front-end",
+      "date": "2025-07-10",
+      "image": "https://placehold.co/236x282"
+    },
+    {
+      "id": "4",
+      "name": "Angular Workshop",
+      "theme": "Front-end",
+      "date": "2025-07-25",
+      "image": "https://placehold.co/236x282"
+    }
+  ]
+}
