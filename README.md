@@ -38,8 +38,8 @@ Em um terminal, rode o comando abaixo para disponibilizar os eventos na porta 30
 3. Inicie o servidor de desenvolvimento:
 Abra um novo terminal (mantendo o anterior rodando) e execute:
 
-  ```bash
-  pnpm dev
-  ```
+   ```bash
+   pnpm dev
+   ```
 4. Acesse a aplicação:
 Abra http://localhost:3000 no seu navegador.
