@@ -5,7 +5,7 @@ export default function Home() {
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">TecBoard</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">TecBoard_v3</h1>
           <p className="text-xl text-white max-w-2xl mx-auto">
             Plataforma de eventos de tecnologia
           </p>
